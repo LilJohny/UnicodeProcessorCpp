@@ -15,7 +15,10 @@ std::pair<std::string, std::string> parse_args(int argc, char *argv[]) {
         throw std::runtime_error("File is not specified");
     } else if (argc == 2) {
         return std::make_pair(argv[1], "");
+    } else if (argc == 3) {
+        return std::make_pair(argv[1], argv[2]);
     }
+    return std::make_pair("", "");
 }
 
 auto read_all_bytes_fom_file(const std::string &current_file) {
@@ -82,7 +85,7 @@ auto normalize_utf16(const std::vector<byte> &bytes) {
 auto normalize_utf32(const std::vector<byte> &bytes) {
     std::vector<std::vector<byte>> normalized_bytes;
     for (int i = 0; i < bytes.size(); i += 4) {
-        normalized_bytes.emplace_back(bytes.begin() + i, bytes.begin() + i + 3);
+        normalized_bytes.emplace_back(bytes.begin() + i, bytes.begin() + i + 4);
     }
     return normalized_bytes;
 }
@@ -103,7 +106,6 @@ int main(int argc, char *argv[]) {
     auto input_file = args.first;
     auto encoding = args.second;
     auto file_bytes = read_all_bytes_fom_file(input_file);
-
     auto deducted_encoding = get_encoding(file_bytes);
     if (deducted_encoding.first == 0) {
         throw std::runtime_error("Dont supported file encoding");
