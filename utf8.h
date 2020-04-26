@@ -16,7 +16,7 @@ namespace utf8 {
     const std::byte BOM_THIRD = std::byte('\xbf');
     const std::vector<std::byte> WHITESPACES_S = {std::byte('\x09'), std::byte('\x0a'), std::byte('\x0b'),
                                                   std::byte('\x0c'), std::byte('\x0d'), std::byte('\x20')};
-    const std::vector<std::vector<std::byte>> WHITSPACES_M = {
+    const std::vector<std::vector<std::byte>> WHITSPACES_D = {
             {std::byte('\xc2'), std::byte('\x85')},
             {std::byte('\xc2'), std::byte('\xa0')},
             {std::byte('\xe1'), std::byte('\x9a'), std::byte('\x80')},
