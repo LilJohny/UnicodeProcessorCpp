@@ -1,11 +1,13 @@
 #include <iostream>
 #include <fstream>
-#include <sstream>
 #include <vector>
 #include <cstddef>
 #include <filesystem>
 #include <map>
 #include <functional>
+#include "utf8.h"
+#include "utf16.h"
+#include "utf32.h"
 
 using byte = std::byte;
 
@@ -69,34 +71,13 @@ size_t count_words(std::vector<std::vector<byte>> bytes, std::pair<std::string, 
     return 0;
 }
 
-auto normalize_utf8(const std::vector<byte> &bytes) {
-    std::vector<std::vector<byte>> normalized_bytes;
-    return normalized_bytes;
-}
-
-auto normalize_utf16(const std::vector<byte> &bytes) {
-    std::vector<std::vector<byte>> normalized_bytes;
-//    for (int i = 0; i < bytes.size();) {
-//        if()
-//    }
-    return normalized_bytes;
-}
-
-auto normalize_utf32(const std::vector<byte> &bytes) {
-    std::vector<std::vector<byte>> normalized_bytes;
-    normalized_bytes.reserve(bytes.size()/4);
-    for (int i = 0; i < bytes.size(); i += 4) {
-        normalized_bytes.emplace_back(bytes.begin() + i, bytes.begin() + i + 4);
-    }
-    return normalized_bytes;
-}
 
 auto normalize_according_to_encoding(const std::vector<byte> &bytes, int encoding) {
     std::vector<std::vector<byte>> normalized_bytes;
     std::map<int, std::function<std::vector<std::vector<byte>>(std::vector<byte>)>> normalizers
-            = {{8,  std::function(normalize_utf8)},
-               {16, std::function(normalize_utf16)},
-               {32, std::function(normalize_utf32)}};
+            = {{8,  std::function(utf8::normalize)},
+               {16, std::function(utf16::normalize)},
+               {32, std::function(utf32::normalize)}};
     auto normalizer = normalizers[encoding];
     normalized_bytes = normalizer(bytes);
     return normalized_bytes;
