@@ -23,7 +23,8 @@ std::vector<std::vector<std::byte>> utf8::normalize(const std::vector<std::byte>
                    byte_bin[2] == '0') {
             length = 4;
         }
-        normalized_bytes.emplace_back(bytes.begin(), bytes.begin()+length);
+        normalized_bytes.emplace_back(bytes.begin(), bytes.begin() + length);
+        i += length;
     }
     return normalized_bytes;
 }

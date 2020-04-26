@@ -22,7 +22,7 @@ std::pair<std::string, std::string> parse_args(int argc, char *argv[]) {
     return std::make_pair("", "");
 }
 
-auto read_all_bytes_fom_file(const std::string &current_file) {
+std::vector<std::byte> read_all_bytes_fom_file(const std::string &current_file) {
     std::ifstream raw_file(current_file, std::ios::binary);
     size_t length = std::filesystem::file_size(current_file);
     std::vector<std::byte> data(length);
