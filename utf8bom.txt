@@ -1,0 +1,1 @@
+﻿This is  encoding utf-8 with BOM test file
