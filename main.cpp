@@ -62,8 +62,8 @@ size_t count_code_points(std::vector<std::vector<std::byte>> bytes, std::pair<st
     return bytes.size();
 }
 
-size_t count_code_units(std::vector<std::vector<std::byte>> bytes, std::pair<std::string, std::string> encoding) {
-    return 0;
+size_t count_code_units(const std::vector<std::byte> &bytes) {
+    return bytes.size();
 }
 
 size_t count_words(std::vector<std::vector<std::byte>> bytes, std::pair<std::string, std::string> encoding) {
@@ -91,5 +91,6 @@ int main(int argc, char *argv[]) {
     if (deducted_encoding.first == 0) {
         throw std::runtime_error("Dont supported file encoding");
     }
+    std::cout << "Code units number: " << count_code_units(file_bytes);
     return 0;
 }
