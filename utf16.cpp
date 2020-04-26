@@ -23,10 +23,12 @@ std::vector<std::vector<std::byte> > utf16::normalize(const std::vector<std::byt
     for (int i = 0; i < bytes.size();) {
         std::byte byte = bytes[0];
         int length = 1;
-        if (is_low_surrogate(byte) || is_high_surrogate(byte)) {
+        if (utf16::is_low_surrogate(byte) || utf16::is_high_surrogate(byte)) {
+            normalized_bytes.emplace_back(bytes.begin() + i, bytes.end() + i + 2);
             length = 2;
         }
-        normalized_bytes.emplace_back(bytes.begin() + i, bytes.end() + i + length);
+        normalized_bytes.emplace_back(1,byte);
+        i += length;
     }
     return normalized_bytes;
 }
