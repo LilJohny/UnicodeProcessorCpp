@@ -14,6 +14,6 @@ namespace utf16 {
     const std::byte BOM_LE_SECOND = std::byte('\xfe');
 
     bool is_valid(std::vector<std::byte> bytes);
-    std::vector<std::vector<std::byte>> normalize(std::vector<std::byte> bytes);
+    std::vector<std::vector<std::byte>> normalize(const std::vector<std::byte>& bytes);
 }
 #endif //UNICODEPROCESSOR_UTF16_H
