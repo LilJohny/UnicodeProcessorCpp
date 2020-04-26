@@ -3,6 +3,6 @@
 //
 #include "utf8.h"
 
-    bool utf8::is_valid(std::vector<std::byte> bytes) {
+bool utf8::is_valid(std::vector<std::byte> bytes) {
     return false;
 }

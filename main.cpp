@@ -9,7 +9,6 @@
 #include "utf16.h"
 #include "utf32.h"
 
-using byte = std::byte;
 
 std::pair<std::string, std::string> parse_args(int argc, char *argv[]) {
     if (argc == 1) {
@@ -33,48 +32,48 @@ auto read_all_bytes_fom_file(const std::string &current_file) {
 
 std::pair<int, std::string> get_encoding(std::vector<std::byte> &bytes) {
     std::pair<int, std::string> encoding;
-    if (bytes[0] == byte('\xef') && bytes[1] == byte('\xbb') && bytes[2] == byte('\xbf')) {
+    if (bytes[0] == utf8::BOM_FIRST && bytes[1] == utf8::BOM_SECOND && bytes[2] == utf8::BOM_THIRD) {
         encoding = std::make_pair(8, "");
         bytes = std::vector(bytes.begin() + 3, bytes.end());
         return encoding;
-    } else if (bytes[0] == byte('\xff') && bytes[1] == byte('\xfe')) {
+    } else if (bytes[0] == utf16::BOM_LE_FIRST && bytes[1] == utf16::BOM_LE_SECOND) {
         encoding = std::make_pair(16, "le");
         bytes = std::vector(bytes.begin() + 2, bytes.end());
         return encoding;
-    } else if (bytes[0] == byte('\xfe') && bytes[1] == byte('\xff')) {
+    } else if (bytes[0] == utf16::BOM_BE_FIRST && bytes[1] == utf16::BOM_BE_SECOND) {
         encoding = std::make_pair(16, "be");
         bytes = std::vector(bytes.begin() + 2, bytes.end());
         return encoding;
-    } else if (bytes[0] == byte('\xff') && bytes[1] == byte('\xfe') && bytes[2] == byte('\x00') &&
-               bytes[3] == byte('\x00')) {
-        encoding = std::make_pair(16, "le");
+    } else if (bytes[0] == utf32::BOM_LE_FIRST && bytes[1] == utf32::BOM_LE_SECOND && bytes[2] == utf32::BOM_NULL &&
+               bytes[3] == utf32::BOM_NULL) {
+        encoding = std::make_pair(32, "le");
         bytes = std::vector(bytes.begin() + 4, bytes.end());
         return encoding;
-    } else if (bytes[0] == byte('\x00') && bytes[1] == byte('\x00') && bytes[2] == byte('\xfe') &&
-               bytes[3] == byte('\xff')) {
-        encoding = std::make_pair(16, "be");
+    } else if (bytes[0] == utf32::BOM_NULL && bytes[1] == utf32::BOM_NULL && bytes[2] == utf32::BOM_BE_THIRD &&
+               bytes[3] == utf32::BOM_BE_FOURTH) {
+        encoding = std::make_pair(32, "be");
         bytes = std::vector(bytes.begin() + 4, bytes.end());
         return encoding;
     }
     return std::make_pair(0, "");
 }
 
-size_t count_code_points(std::vector<std::vector<byte>> bytes, std::pair<std::string, std::string> encoding) {
+size_t count_code_points(std::vector<std::vector<std::byte>> bytes, std::pair<std::string, std::string> encoding) {
     return bytes.size();
 }
 
-size_t count_code_units(std::vector<std::vector<byte>> bytes, std::pair<std::string, std::string> encoding) {
+size_t count_code_units(std::vector<std::vector<std::byte>> bytes, std::pair<std::string, std::string> encoding) {
     return 0;
 }
 
-size_t count_words(std::vector<std::vector<byte>> bytes, std::pair<std::string, std::string> encoding) {
+size_t count_words(std::vector<std::vector<std::byte>> bytes, std::pair<std::string, std::string> encoding) {
     return 0;
 }
 
 
-auto normalize_according_to_encoding(const std::vector<byte> &bytes, int encoding) {
-    std::vector<std::vector<byte>> normalized_bytes;
-    std::map<int, std::function<std::vector<std::vector<byte>>(std::vector<byte>)>> normalizers
+auto normalize_according_to_encoding(const std::vector<std::byte> &bytes, int encoding) {
+    std::vector<std::vector<std::byte>> normalized_bytes;
+    std::map<int, std::function<std::vector<std::vector<std::byte>>(std::vector<std::byte>)>> normalizers
             = {{8,  std::function(utf8::normalize)},
                {16, std::function(utf16::normalize)},
                {32, std::function(utf32::normalize)}};
