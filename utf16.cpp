@@ -20,5 +20,13 @@ bool utf16::is_valid(std::vector<std::byte> bytes) {
 
 std::vector<std::vector<std::byte> > utf16::normalize(const std::vector<std::byte> &bytes) {
     std::vector<std::vector<std::byte>> normalized_bytes;
+    for (int i = 0; i < bytes.size();) {
+        std::byte byte = bytes[0];
+        int length = 1;
+        if (is_low_surrogate(byte) || is_high_surrogate(byte)) {
+            length = 2;
+        }
+        normalized_bytes.emplace_back(bytes.begin() + i, bytes.end() + i + length);
+    }
     return normalized_bytes;
 }
