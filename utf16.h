@@ -1,0 +1,8 @@
+//
+// Created by denis on 26.04.20.
+//
+
+#ifndef UNICODEPROCESSOR_UTF16_H
+#define UNICODEPROCESSOR_UTF16_H
+
+#endif //UNICODEPROCESSOR_UTF16_H

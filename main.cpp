@@ -58,7 +58,7 @@ std::pair<int, std::string> get_encoding(std::vector<std::byte> &bytes) {
 }
 
 size_t count_code_points(std::vector<std::vector<byte>> bytes, std::pair<std::string, std::string> encoding) {
-    return 0;
+    return bytes.size();
 }
 
 size_t count_code_units(std::vector<std::vector<byte>> bytes, std::pair<std::string, std::string> encoding) {
@@ -84,6 +84,7 @@ auto normalize_utf16(const std::vector<byte> &bytes) {
 
 auto normalize_utf32(const std::vector<byte> &bytes) {
     std::vector<std::vector<byte>> normalized_bytes;
+    normalized_bytes.reserve(bytes.size()/4);
     for (int i = 0; i < bytes.size(); i += 4) {
         normalized_bytes.emplace_back(bytes.begin() + i, bytes.begin() + i + 4);
     }
