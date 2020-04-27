@@ -64,7 +64,8 @@ size_t unicode::count_words(const std::vector<std::vector<std::byte> > &bytes, i
     return result;
 }
 
-std::vector<std::vector<std::byte>> unicode::normalize_according_to_encoding(const std::vector<std::byte> &bytes, int encoding) {
+std::vector<std::vector<std::byte>>
+unicode::normalize_according_to_encoding(const std::vector<std::byte> &bytes, int encoding) {
     std::vector<std::vector<std::byte>> normalized_bytes;
     std::map<int, std::function<std::vector<std::vector<std::byte>>(std::vector<std::byte>)>> normalizers
             = {{8,  std::function(utf8::normalize)},
@@ -73,4 +74,15 @@ std::vector<std::vector<std::byte>> unicode::normalize_according_to_encoding(con
     auto normalizer = normalizers[encoding];
     normalized_bytes = normalizer(bytes);
     return normalized_bytes;
+}
+
+size_t unicode::validate(const std::vector<std::byte> &bytes, int encoding) {
+    std::vector<std::vector<std::byte>> normalized_bytes;
+    std::map<int, std::function<size_t(const std::vector<std::byte> &)>> validators
+            = {{8,  std::function(utf8::validate)},
+               {16, std::function(utf16::validate)},
+               {32, std::function(utf32::validate)}};
+    auto validator = validators[encoding];
+    auto bad_bits = validator(bytes);
+    return bad_bits;
 }

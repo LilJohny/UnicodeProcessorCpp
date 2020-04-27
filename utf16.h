@@ -59,5 +59,7 @@ namespace utf16 {
 
     std::vector<std::vector<std::byte>> normalize(const std::vector<std::byte> &bytes);
 
+    size_t validate(const std::vector<std::byte> &bytes);
+
 }
 #endif //UNICODEPROCESSOR_UTF16_H

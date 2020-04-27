@@ -50,5 +50,7 @@ namespace utf32 {
     size_t count_words(const std::vector<std::vector<std::byte>> &bytes);
 
     std::vector<std::vector<std::byte>> normalize(const std::vector<std::byte> &bytes);
+
+    size_t validate(const std::vector<std::byte> &bytes);
 }
 #endif //UNICODEPROCESSOR_UTF32_H

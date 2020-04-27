@@ -23,6 +23,12 @@ int main(int argc, char *argv[]) {
     if (deducted_encoding.first == 0) {
         throw std::runtime_error("Dont supported file encoding");
     }
+    auto bad_bits = unicode::validate(file_bytes, deducted_encoding.first);
+    if (bad_bits != 0) {
+        std::cout << input_file << "has bad encoding." << std::endl;
+        std::cout << "Number of bad bits: " << bad_bits << std::endl;
+        return 1;
+    }
     std::cout << "Code units number: " << unicode::count_code_units(file_bytes) << std::endl;
     auto normalized_bytes = unicode::normalize_according_to_encoding(file_bytes, deducted_encoding.first);
     std::cout << "Code points number: " << unicode::count_code_points(normalized_bytes) << std::endl;
