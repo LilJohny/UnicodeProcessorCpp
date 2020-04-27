@@ -18,7 +18,9 @@ namespace utf8 {
                                                   std::byte('\x0c'), std::byte('\x0d'), std::byte('\x20')};
     const std::vector<std::vector<std::byte>> WHITSPACES_D = {
             {std::byte('\xc2'), std::byte('\x85')},
-            {std::byte('\xc2'), std::byte('\xa0')},
+            {std::byte('\xc2'), std::byte('\xa0')}
+    };
+    const std::vector<std::vector<std::byte>> WHITSPACES_T ={
             {std::byte('\xe1'), std::byte('\x9a'), std::byte('\x80')},
             {std::byte('\xe2'), std::byte('\x80'), std::byte('\x81')},
             {std::byte('\xe2'), std::byte('\x80'), std::byte('\x82')},
