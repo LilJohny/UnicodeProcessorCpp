@@ -49,7 +49,7 @@ namespace utf16 {
 
     bool is_valid(std::vector<std::byte> bytes);
 
-    bool is_space(std::vector<std::byte> bytes);
+    bool is_space(const std::vector<std::byte> &bytes);
 
     bool is_high_surrogate(std::byte byte);
 

@@ -47,7 +47,7 @@ namespace utf8 {
 
     bool is_valid(std::vector<std::byte> bytes);
 
-    bool is_space(std::vector<std::byte> bytes);
+    bool is_space(const std::vector<std::byte> &bytes);
 
     std::vector<std::vector<std::byte>> normalize(const std::vector<std::byte> &bytes);
 }

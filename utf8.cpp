@@ -7,7 +7,7 @@ bool utf8::is_valid(std::vector<std::byte> bytes) {
     return false;
 }
 
-bool utf8::is_space(std::vector<std::byte> bytes) {
+bool utf8::is_space(const std::vector<std::byte> &bytes) {
     if (bytes.size() == 4) {
         return false;
     } else if (bytes.size() == 3) {

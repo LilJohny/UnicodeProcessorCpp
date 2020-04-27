@@ -7,7 +7,7 @@ bool utf32::is_valid(std::vector<std::byte> bytes) {
     return false;
 }
 
-bool utf32::is_space(std::vector<std::byte> bytes) {
+bool utf32::is_space(const std::vector<std::byte> &bytes) {
     for (auto whitespace : WHITESPACES_S) {
         if (bytes[0] == NULL_BYTE && bytes[1] == NULL_BYTE && bytes[2] == NULL_BYTE && bytes[3] == whitespace) {
             return true;

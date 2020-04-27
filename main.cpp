@@ -58,7 +58,7 @@ std::pair<int, std::string> get_encoding(std::vector<std::byte> &bytes) {
     return std::make_pair(0, "");
 }
 
-size_t count_code_points(std::vector<std::vector<std::byte>> bytes) {
+size_t count_code_points(const std::vector<std::vector<std::byte>>& bytes) {
     return bytes.size();
 }
 
