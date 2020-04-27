@@ -44,12 +44,12 @@ std::pair<int, std::string> get_encoding(std::vector<std::byte> &bytes) {
         encoding = std::make_pair(16, "be");
         bytes = std::vector(bytes.begin() + 2, bytes.end());
         return encoding;
-    } else if (bytes[0] == utf32::BOM_LE_FIRST && bytes[1] == utf32::BOM_LE_SECOND && bytes[2] == utf32::BOM_NULL &&
-               bytes[3] == utf32::BOM_NULL) {
+    } else if (bytes[0] == utf32::BOM_LE_FIRST && bytes[1] == utf32::BOM_LE_SECOND && bytes[2] == utf32::NULL_BYTE &&
+               bytes[3] == utf32::NULL_BYTE) {
         encoding = std::make_pair(32, "le");
         bytes = std::vector(bytes.begin() + 4, bytes.end());
         return encoding;
-    } else if (bytes[0] == utf32::BOM_NULL && bytes[1] == utf32::BOM_NULL && bytes[2] == utf32::BOM_BE_THIRD &&
+    } else if (bytes[0] == utf32::NULL_BYTE && bytes[1] == utf32::NULL_BYTE && bytes[2] == utf32::BOM_BE_THIRD &&
                bytes[3] == utf32::BOM_BE_FOURTH) {
         encoding = std::make_pair(32, "be");
         bytes = std::vector(bytes.begin() + 4, bytes.end());

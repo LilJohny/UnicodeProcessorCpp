@@ -16,11 +16,11 @@ namespace utf8 {
     const std::byte BOM_THIRD = std::byte('\xbf');
     const std::vector<std::byte> WHITESPACES_S = {std::byte('\x09'), std::byte('\x0a'), std::byte('\x0b'),
                                                   std::byte('\x0c'), std::byte('\x0d'), std::byte('\x20')};
-    const std::vector<std::vector<std::byte>> WHITSPACES_D = {
+    const std::vector<std::vector<std::byte>> WHITESPACES_D = {
             {std::byte('\xc2'), std::byte('\x85')},
             {std::byte('\xc2'), std::byte('\xa0')}
     };
-    const std::vector<std::vector<std::byte>> WHITSPACES_T ={
+    const std::vector<std::vector<std::byte>> WHITESPACES_T ={
             {std::byte('\xe1'), std::byte('\x9a'), std::byte('\x80')},
             {std::byte('\xe2'), std::byte('\x80'), std::byte('\x81')},
             {std::byte('\xe2'), std::byte('\x80'), std::byte('\x82')},
@@ -46,6 +46,8 @@ namespace utf8 {
     };
 
     bool is_valid(std::vector<std::byte> bytes);
+
+    bool is_space(std::vector<std::byte> bytes);
 
     std::vector<std::vector<std::byte>> normalize(const std::vector<std::byte> &bytes);
 }

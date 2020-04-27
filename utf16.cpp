@@ -18,6 +18,23 @@ bool utf16::is_valid(std::vector<std::byte> bytes) {
     return false;
 }
 
+bool utf16::is_space(std::vector<std::byte> bytes) {
+    if (bytes.size() == 1) {
+        for (auto whitespace : WHITESPACES_S) {
+            if (bytes[0] == whitespace) {
+                return true;
+            }
+        }
+    } else if (bytes.size() == 2) {
+        for (const auto &whitespaces : WHITESPACES_D) {
+            if (bytes[0] == whitespaces[0] && bytes[1] == whitespaces[1]) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 std::vector<std::vector<std::byte> > utf16::normalize(const std::vector<std::byte> &bytes) {
     std::vector<std::vector<std::byte>> normalized_bytes;
     for (int i = 0; i < bytes.size();) {
@@ -27,7 +44,7 @@ std::vector<std::vector<std::byte> > utf16::normalize(const std::vector<std::byt
             normalized_bytes.emplace_back(bytes.begin() + i, bytes.end() + i + 2);
             length = 2;
         }
-        normalized_bytes.emplace_back(1,byte);
+        normalized_bytes.emplace_back(1, byte);
         i += length;
     }
     return normalized_bytes;

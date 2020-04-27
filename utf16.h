@@ -19,7 +19,7 @@ namespace utf16 {
     const std::vector<std::byte> WHITESPACES_S = {std::byte('\x09'), std::byte('\x0a'), std::byte('\x0b'),
                                                   std::byte('\x0c'), std::byte('\x0d'), std::byte('\x20'),
                                                   std::byte('\x85'), std::byte('\xa0')};
-    const std::vector<std::vector<std::byte>> WHITSPACES_D = {
+    const std::vector<std::vector<std::byte>> WHITESPACES_D = {
             {std::byte('\x16'), std::byte('\x80')},
             {std::byte('\x20'), std::byte('\x00')},
             {std::byte('\x20'), std::byte('\x01')},
@@ -48,6 +48,8 @@ namespace utf16 {
     };
 
     bool is_valid(std::vector<std::byte> bytes);
+
+    bool is_space(std::vector<std::byte> bytes);
 
     bool is_high_surrogate(std::byte byte);
 
