@@ -49,7 +49,7 @@ namespace utf8 {
 
     bool is_space(const std::vector<std::byte> &bytes);
 
-    size_t count_words(const std::vector<std::vector<std::byte>> &bytes);
+    size_t count_words(const std::vector<std::vector<std::byte>> &bytes, int order);
 
     std::vector<std::vector<std::byte>> normalize(const std::vector<std::byte> &bytes);
 

@@ -2,6 +2,7 @@
 // Created by denis on 26.04.20.
 //
 #include <cstddef>
+#include <algorithm>
 #include "utf16.h"
 #include "unicode.h"
 
@@ -45,12 +46,22 @@ std::vector<std::vector<std::byte> > utf16::normalize(const std::vector<std::byt
     return normalized_bytes;
 }
 
-size_t utf16::count_words(const std::vector<std::vector<std::byte> > &bytes) {
+size_t utf16::count_words(const std::vector<std::vector<std::byte> > &bytes, int order) {
     size_t words_num = 1;
+    std::function<std::vector<std::byte>(std::vector<std::byte>)> func;
+    if (order == -1) {
+        func = [](std::vector<std::byte> bytes) {
+            std::reverse(bytes.begin(), bytes.end());
+            return bytes;
+        };
+    } else {
+        func = [](const std::vector<std::byte> &bytes) { return bytes; };
+    }
+
     for (int i = 1; i < bytes.size() - 1; ++i) {
-        if (utf16::is_space(bytes[i])) {
+        if (utf16::is_space(func(bytes[i]))) {
             i++;
-            while (utf16::is_space(bytes[i])) {
+            while (utf16::is_space(func(bytes[i]))) {
                 i++;
             }
             words_num++;

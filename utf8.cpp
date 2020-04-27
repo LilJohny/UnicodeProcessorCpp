@@ -56,7 +56,7 @@ std::vector<std::vector<std::byte>> utf8::normalize(const std::vector<std::byte>
     return normalized_bytes;
 }
 
-size_t utf8::count_words(const std::vector<std::vector<std::byte>> &bytes) {
+size_t utf8::count_words(const std::vector<std::vector<std::byte>> &bytes, int order) {
     size_t words_num = 1;
     for (int i = 1; i < bytes.size() - 1; ++i) {
         if (utf8::is_space(bytes[i])) {
