@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
         throw std::runtime_error("Dont supported file encoding");
     }
     auto bad_bits = unicode::validate(file_bytes, deducted_encoding.first);
-    if (bad_bits.size() != 0) {
+    if (!bad_bits.empty()) {
         std::cout << input_file << "has bad encoding." << std::endl;
         std::cout << "Number of bad bits: " << bad_bits.size() << std::endl;
         std::cout << "List of bad bits :" << std::endl;
