@@ -70,6 +70,6 @@ size_t utf8::count_words(const std::vector<std::vector<std::byte>> &bytes) {
     return words_num;
 }
 
-size_t utf8::validate(const std::vector<std::byte> &bytes) {
-    return true;
+std::vector<std::byte> utf8::validate(const std::vector<std::byte> &bytes) {
+    return {};
 }

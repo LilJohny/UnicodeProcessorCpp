@@ -25,7 +25,7 @@ namespace unicode {
 
     std::vector<std::byte> read_all_bytes_fom_file(const std::string &current_file);
 
-    size_t validate(const std::vector<std::byte> &bytes, int encoding);
+    std::vector<std::byte> validate(const std::vector<std::byte> &bytes, int encoding);
 
 
 }

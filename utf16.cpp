@@ -59,6 +59,6 @@ size_t utf16::count_words(const std::vector<std::vector<std::byte> > &bytes) {
     return words_num;
 }
 
-size_t utf16::validate(const std::vector<std::byte> &bytes) {
-    return true;
+std::vector<std::byte> utf16::validate(const std::vector<std::byte> &bytes) {
+    return {};
 }
