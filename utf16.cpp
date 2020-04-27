@@ -3,6 +3,7 @@
 //
 #include <cstddef>
 #include "utf16.h"
+#include "unicode.h"
 
 bool utf16::is_high_surrogate(std::byte byte) {
     auto byte_short = std::to_integer<unsigned short>(byte);
@@ -19,33 +20,41 @@ bool utf16::is_valid(std::vector<std::byte> bytes) {
 }
 
 bool utf16::is_space(const std::vector<std::byte> &bytes) {
-    if (bytes.size() == 1) {
-        for (auto whitespace : WHITESPACES_S) {
-            if (bytes[0] == whitespace) {
-                return true;
-            }
-        }
-    } else if (bytes.size() == 2) {
-        for (const auto &whitespaces : WHITESPACES_D) {
-            if (bytes[0] == whitespaces[0] && bytes[1] == whitespaces[1]) {
-                return true;
-            }
+    for (auto whitespace : WHITESPACES_S) {
+        if (bytes[0] == unicode::NULL_BYTE && bytes[1] == whitespace) {
+            return true;
         }
     }
+
+    for (const auto &whitespaces : WHITESPACES_D) {
+        if (bytes[0] == whitespaces[0] && bytes[1] == whitespaces[1]) {
+            return true;
+        }
+    }
+
     return false;
 }
 
 std::vector<std::vector<std::byte> > utf16::normalize(const std::vector<std::byte> &bytes) {
     std::vector<std::vector<std::byte>> normalized_bytes;
-    for (int i = 0; i < bytes.size();) {
-        std::byte byte = bytes[0];
-        int length = 1;
-        if (utf16::is_low_surrogate(byte) || utf16::is_high_surrogate(byte)) {
-            normalized_bytes.emplace_back(bytes.begin() + i, bytes.end() + i + 2);
-            length = 2;
-        }
-        normalized_bytes.emplace_back(1, byte);
-        i += length;
+    const int seq_length = 2;
+    normalized_bytes.reserve(bytes.size() / seq_length);
+    for (int i = 0; i < bytes.size(); i += seq_length) {
+        normalized_bytes.emplace_back(bytes.begin() + i, bytes.begin() + i + seq_length);
     }
     return normalized_bytes;
+}
+
+size_t utf16::count_words(const std::vector<std::vector<std::byte> > &bytes) {
+    size_t words_num = 1;
+    for (int i = 1; i < bytes.size() - 1; ++i) {
+        if (utf16::is_space(bytes[i])) {
+            i++;
+            while (utf16::is_space(bytes[i])) {
+                i++;
+            }
+            words_num++;
+        }
+    }
+    return words_num;
 }

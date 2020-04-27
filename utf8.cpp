@@ -35,7 +35,8 @@ bool utf8::is_space(const std::vector<std::byte> &bytes) {
 
 std::vector<std::vector<std::byte>> utf8::normalize(const std::vector<std::byte> &bytes) {
     std::vector<std::vector<std::byte>> normalized_bytes;
-    for (int i = 0; i < bytes.size();) {
+    int i = 0;
+    while (i < bytes.size()) {
         std::byte current_byte = bytes[i];
         auto byte_bin = std::bitset<8>(std::to_integer<size_t>(current_byte)).to_string();
         int length;
@@ -49,8 +50,22 @@ std::vector<std::vector<std::byte>> utf8::normalize(const std::vector<std::byte>
                    byte_bin[2] == '0') {
             length = 4;
         }
-        normalized_bytes.emplace_back(bytes.begin(), bytes.begin() + length);
+        normalized_bytes.emplace_back(bytes.begin() + i, bytes.begin() + i + length);
         i += length;
     }
     return normalized_bytes;
+}
+
+size_t utf8::count_words(const std::vector<std::vector<std::byte>> &bytes) {
+    size_t words_num = 1;
+    for (int i = 1; i < bytes.size() - 1; ++i) {
+        if (utf8::is_space(bytes[i])) {
+            i++;
+            while (utf8::is_space(bytes[i])) {
+                i++;
+            }
+            words_num++;
+        }
+    }
+    return words_num;
 }

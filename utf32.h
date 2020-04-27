@@ -12,7 +12,6 @@ namespace utf32 {
     const std::byte BOM_BE_FOURTH = std::byte('\xff');
     const std::byte BOM_LE_FIRST = std::byte('\xff');
     const std::byte BOM_LE_SECOND = std::byte('\xfe');
-    const std::byte NULL_BYTE = std::byte('\x00');
     const std::vector<std::byte> WHITESPACES_S = {std::byte('\x09'), std::byte('\x0a'), std::byte('\x0b'),
                                                   std::byte('\x0c'), std::byte('\x0d'), std::byte('\x20'),
                                                   std::byte('\x85'), std::byte('\xa0')};
@@ -47,6 +46,8 @@ namespace utf32 {
     bool is_valid(std::vector<std::byte> bytes);
 
     bool is_space(const std::vector<std::byte> &bytes);
+
+    size_t count_words(const std::vector<std::vector<std::byte>> &bytes);
 
     std::vector<std::vector<std::byte>> normalize(const std::vector<std::byte> &bytes);
 }

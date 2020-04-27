@@ -51,6 +51,8 @@ namespace utf16 {
 
     bool is_space(const std::vector<std::byte> &bytes);
 
+    size_t count_words(const std::vector<std::vector<std::byte>> &bytes);
+
     bool is_high_surrogate(std::byte byte);
 
     bool is_low_surrogate(std::byte byte);

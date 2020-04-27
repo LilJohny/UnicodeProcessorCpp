@@ -20,7 +20,7 @@ namespace utf8 {
             {std::byte('\xc2'), std::byte('\x85')},
             {std::byte('\xc2'), std::byte('\xa0')}
     };
-    const std::vector<std::vector<std::byte>> WHITESPACES_T ={
+    const std::vector<std::vector<std::byte>> WHITESPACES_T = {
             {std::byte('\xe1'), std::byte('\x9a'), std::byte('\x80')},
             {std::byte('\xe2'), std::byte('\x80'), std::byte('\x81')},
             {std::byte('\xe2'), std::byte('\x80'), std::byte('\x82')},
@@ -48,6 +48,8 @@ namespace utf8 {
     bool is_valid(std::vector<std::byte> bytes);
 
     bool is_space(const std::vector<std::byte> &bytes);
+
+    size_t count_words(const std::vector<std::vector<std::byte>> &bytes);
 
     std::vector<std::vector<std::byte>> normalize(const std::vector<std::byte> &bytes);
 }
