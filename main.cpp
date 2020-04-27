@@ -58,7 +58,7 @@ std::pair<int, std::string> get_encoding(std::vector<std::byte> &bytes) {
     return std::make_pair(0, "");
 }
 
-size_t count_code_points(std::vector<std::vector<std::byte>> bytes, std::pair<std::string, std::string> encoding) {
+size_t count_code_points(std::vector<std::vector<std::byte>> bytes) {
     return bytes.size();
 }
 
@@ -91,6 +91,8 @@ int main(int argc, char *argv[]) {
     if (deducted_encoding.first == 0) {
         throw std::runtime_error("Dont supported file encoding");
     }
-    std::cout << "Code units number: " << count_code_units(file_bytes);
+    std::cout << "Code units number: " << count_code_units(file_bytes) << std::endl;
+    auto normalized_bytes = normalize_according_to_encoding(file_bytes,deducted_encoding.first);
+    std::cout<<"Code points number: "<< count_code_points(normalized_bytes);
     return 0;
 }
