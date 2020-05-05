@@ -1,6 +1,7 @@
 //
 // Created by denis on 26.04.20.
 //
+#include <stdexcept>
 #include "utf8.h"
 
 bool utf8::is_valid(std::vector<std::byte> bytes) {
@@ -39,7 +40,7 @@ std::vector<std::vector<std::byte>> utf8::normalize(const std::vector<std::byte>
     while (i < bytes.size()) {
         std::byte current_byte = bytes[i];
         auto byte_bin = std::bitset<8>(std::to_integer<size_t>(current_byte)).to_string();
-        int length;
+        int length =-1;
         if (byte_bin[0] == '0') {
             length = 1;
         } else if (byte_bin[0] == '1' && byte_bin[1] == '1' && byte_bin[2] == '0') {
@@ -50,13 +51,16 @@ std::vector<std::vector<std::byte>> utf8::normalize(const std::vector<std::byte>
                    byte_bin[2] == '0') {
             length = 4;
         }
+        if(length == -1){
+          throw std::runtime_error("Bad byte");
+        }
         normalized_bytes.emplace_back(bytes.begin() + i, bytes.begin() + i + length);
         i += length;
     }
     return normalized_bytes;
 }
 
-size_t utf8::count_words(const std::vector<std::vector<std::byte>> &bytes, int order) {
+size_t utf8::count_words(const std::vector<std::vector<std::byte>> &bytes, [[maybe_unused]] int order) {
     size_t words_num = 1;
     for (int i = 1; i < bytes.size() - 1; ++i) {
         if (utf8::is_space(bytes[i])) {

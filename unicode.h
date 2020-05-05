@@ -1,7 +1,3 @@
-//
-// Created by denis on 27.04.20.
-//
-
 #ifndef UNICODEPROCESSOR_UNICODE_H
 #define UNICODEPROCESSOR_UNICODE_H
 
@@ -15,7 +11,7 @@ namespace unicode {
     std::vector<std::vector<std::byte>>
     normalize_according_to_encoding(const std::vector<std::byte> &bytes, int encoding);
 
-    size_t count_words(const std::vector<std::vector<std::byte>> &bytes,  std::pair<int,std::string> encoding);
+    size_t count_words(const std::vector<std::vector<std::byte>> &bytes,  const std::pair<int,std::string>& encoding);
 
     size_t count_code_units(const std::vector<std::byte> &bytes);
 

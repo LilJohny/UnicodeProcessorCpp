@@ -1,6 +1,3 @@
-//
-// Created by denis on 27.04.20.
-//
 #include <filesystem>
 #include <fstream>
 #include <functional>
@@ -54,7 +51,7 @@ size_t unicode::count_code_units(const std::vector<std::byte> &bytes) {
     return bytes.size();
 }
 
-size_t unicode::count_words(const std::vector<std::vector<std::byte> > &bytes, std::pair<int, std::string> encoding) {
+size_t unicode::count_words(const std::vector<std::vector<std::byte> > &bytes, const std::pair<int, std::string>& encoding) {
     int order = encoding.second == "be" ? -1 : 1;
     std::map<int, std::function<size_t(const std::vector<std::vector<std::byte>> &, int)>> counters
             = {{8,  std::function(utf8::count_words)},
