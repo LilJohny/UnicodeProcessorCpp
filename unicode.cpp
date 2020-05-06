@@ -75,9 +75,9 @@ unicode::normalize_according_to_encoding(const std::vector<std::byte> &bytes, in
   return normalized_bytes;
 }
 
-std::vector<std::byte> unicode::validate(const std::vector<std::byte> &bytes, int encoding) {
+std::vector<std::pair<std::byte, size_t>> unicode::validate(const std::vector<std::byte> &bytes, int encoding) {
   std::vector<std::vector<std::byte>> normalized_bytes;
-  std::map<int, std::function<std::vector<std::byte>(const std::vector<std::byte> &)>> validators
+  std::map<int, std::function<std::vector<std::pair<std::byte, size_t>>(const std::vector<std::byte> &)>> validators
 	  = {{8, std::function(utf8::validate)},
 		 {16, std::function(utf16::validate)},
 		 {32, std::function(utf32::validate)}};

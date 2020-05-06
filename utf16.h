@@ -62,7 +62,7 @@ bool is_low_surrogate(std::byte byte);
 
 std::vector<std::vector<std::byte>> normalize(const std::vector<std::byte> &bytes);
 
-std::vector<std::byte> validate(const std::vector<std::byte> &bytes);
+std::vector<std::pair<std::byte, size_t>> validate(const std::vector<std::byte> &bytes);
 
 }
 #endif //UNICODEPROCESSOR_UTF16_H

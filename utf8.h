@@ -14,6 +14,7 @@ namespace utf8 {
 const std::byte BOM_FIRST = std::byte('\xef');
 const std::byte BOM_SECOND = std::byte('\xbb');
 const std::byte BOM_THIRD = std::byte('\xbf');
+
 const int QUADRO_UNIT_MAX = 1114111;
 const int QUADRO_UNIT_MIN = 65536;
 const int TRIPLE_UNIT_MAX = 65535;
@@ -22,6 +23,7 @@ const int DOUBLE_UNIT_MAX = 2047;
 const int DOUBLE_UNIT_MIN = 128;
 const int SINGLE_UNIT_MAX = 127;
 const int SINGLE_UNIT_MIN = 0;
+
 const std::vector<std::byte> WHITESPACES_S = {std::byte('\x09'), std::byte('\x0a'), std::byte('\x0b'),
 											  std::byte('\x0c'), std::byte('\x0d'), std::byte('\x20')};
 const std::vector<std::vector<std::byte>> WHITESPACES_D = {
@@ -61,6 +63,6 @@ size_t count_words(const std::vector<std::vector<std::byte>> &bytes, [[maybe_unu
 
 std::vector<std::vector<std::byte>> normalize(const std::vector<std::byte> &bytes);
 
-std::vector<std::byte> validate(const std::vector<std::byte> &bytes);
+std::vector<std::pair<std::byte, size_t>> validate(const std::vector<std::byte> &bytes);
 }
 #endif //UNICODEPROCESSOR_UTF8_H

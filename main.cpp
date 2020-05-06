@@ -115,7 +115,8 @@ int main(int argc, char *argv[]) {
 	std::cout << "Number of bad bits: " << bad_bits.size() << std::endl;
 	std::cout << "List of bad bits :" << std::endl;
 	for (auto &bad_bit : bad_bits) {
-	  std::cout << std::hex << std::to_integer<int>(bad_bit) << std::endl;
+	  std::cout << std::hex << std::to_integer<int>(bad_bit.first);
+	  std::cout << " at" << bad_bit.second << " position" << std::endl;
 	}
 	return 3;
   }
