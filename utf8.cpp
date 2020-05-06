@@ -32,22 +32,38 @@ bool utf8::is_space(const std::vector<std::byte> &bytes) {
   }
   return false;
 }
+std::string to_bin(std::byte current_byte) {
+  return std::bitset<8>(std::to_integer<size_t>(current_byte)).to_string();
+}
+bool is_valid_one_byte_unit_start(std::string byte_bin) {
+  return byte_bin[0] == '0';
+}
 
+bool is_valid_two_byte_unit_start(std::string byte_bin) {
+  return byte_bin[0] == '1' && byte_bin[1] == '1' && byte_bin[2] == '0';
+}
+
+bool is_valid_three_byte_unit_start(std::string byte_bin) {
+  return byte_bin[0] == '1' && byte_bin[1] == '1' && byte_bin[2] == '1' && byte_bin[2] == '0';
+}
+
+bool is_valid_four_byte_unit_start(std::string byte_bin) {
+  return byte_bin[0] == '1' && byte_bin[1] == '1' && byte_bin[2] == '1' && byte_bin[2] == '1' && byte_bin[2] == '0';
+}
 std::vector<std::vector<std::byte>> utf8::normalize(const std::vector<std::byte> &bytes) {
   std::vector<std::vector<std::byte>> normalized_bytes;
   int i = 0;
   while (i < bytes.size()) {
 	std::byte current_byte = bytes[i];
-	auto byte_bin = std::bitset<8>(std::to_integer<size_t>(current_byte)).to_string();
+	auto byte_bin = to_bin(current_byte);
 	int length = -1;
-	if (byte_bin[0] == '0') {
+	if (is_valid_one_byte_unit_start(byte_bin)) {
 	  length = 1;
-	} else if (byte_bin[0] == '1' && byte_bin[1] == '1' && byte_bin[2] == '0') {
+	} else if (is_valid_two_byte_unit_start(byte_bin)) {
 	  length = 2;
-	} else if (byte_bin[0] == '1' && byte_bin[1] == '1' && byte_bin[2] == '1' && byte_bin[2] == '0') {
+	} else if (is_valid_three_byte_unit_start(byte_bin)) {
 	  length = 3;
-	} else if (byte_bin[0] == '1' && byte_bin[1] == '1' && byte_bin[2] == '1' && byte_bin[2] == '1' &&
-		byte_bin[2] == '0') {
+	} else if (is_valid_four_byte_unit_start(byte_bin)) {
 	  length = 4;
 	}
 	if (length == -1) {
