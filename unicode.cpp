@@ -18,7 +18,7 @@ std::vector<std::byte> unicode::read_all_bytes_fom_file(const std::string &curre
 std::pair<int, std::string> unicode::get_encoding(std::vector<std::byte> &bytes) {
   std::pair<int, std::string> encoding;
   if (bytes[0] == utf8::BOM_FIRST && bytes[1] == utf8::BOM_SECOND && bytes[2] == utf8::BOM_THIRD) {
-    encoding = std::make_pair(8, "");
+    encoding = std::make_pair(8, "bom");
     bytes = std::vector(bytes.begin() + 3, bytes.end());
     return encoding;
   } else if (bytes[0] == utf16::BOM_LE_FIRST && bytes[1] == utf16::BOM_LE_SECOND) {
