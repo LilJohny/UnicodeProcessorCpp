@@ -40,7 +40,7 @@ std::pair<std::string, std::string> parse_args(int argc, std::vector<std::string
 	  incorrect_input_handler();
 	}
 	if (!std::filesystem::exists(filename)) {
-	  throw std::runtime_error("File " + filename + "does not exist");
+	  throw std::runtime_error("File " + filename + " does not exist");
 	}
 	return std::make_pair(filename, encoding);
   }
