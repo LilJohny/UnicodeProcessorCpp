@@ -7,7 +7,7 @@ std::pair<std::string, std::string> parse_args(int argc, std::vector<std::string
   if (argc == 2 && argv[1] == "-h") {
 	show_help();
   }
-  if (argc < 3) {
+  else if (argc < 3) {
 	std::cerr << "Incorrect format of program call";
 	std::cout << "Example of program use:" << std::endl;
 	std::cout << "./unicode -file text_filename [-encoding encoding_name]" << std::endl << "or" << std::endl;
