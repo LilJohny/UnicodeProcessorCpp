@@ -6,6 +6,7 @@ void show_help() {
 std::pair<std::string, std::string> parse_args(int argc, std::vector<std::string> argv) {
   if (argc == 2 && argv[1] == "-h") {
 	show_help();
+	exit(0);
   }
   else if (argc < 3) {
 	std::cerr << "Incorrect format of program call";
