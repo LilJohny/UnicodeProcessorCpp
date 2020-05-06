@@ -33,7 +33,7 @@ std::pair<std::string, std::string> parse_args(int argc, std::vector<std::string
 	  } else if (argv[i - 1][0] != '-' && argv[i][0] != '-') {
 		filename = argv[i];
 	  } else if (argv[i][0] == '-') {
-		throw std::runtime_error("Option " + argv[i] + "is invalid");
+		throw std::runtime_error("Option " + argv[i] + " is invalid");
 	  }
 	}
 	if (filename.empty()) {
