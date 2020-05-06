@@ -65,7 +65,7 @@ std::pair<int, std::string> parse_encoding(const std::string &encoding_str) {
   if (parsed_encoding.first == 1) {
 	throw std::runtime_error(encoding_str + " is not valid encoding name.");
   }
-  return std::make_pair(1, "");
+  return parsed_encoding;
 }
 
 int main(int argc, char *argv[]) {
