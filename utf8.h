@@ -55,7 +55,7 @@ const std::vector<std::vector<std::byte>> WHITESPACES_T = {
 	{std::byte('\xef'), std::byte('\xbb'), std::byte('\xbf')}
 };
 
-bool is_valid(std::vector<std::byte> bytes);
+bool is_valid(std::byte previous_byte, std::byte current_byte);
 
 bool is_space(const std::vector<std::byte> &bytes);
 
