@@ -105,8 +105,8 @@ bool utf8::is_valid_continuation(std::byte previous_byte, std::byte current_byte
 }
 inline bool utf8::is_valid(std::byte byte) {
   auto byte_bin = to_bin(byte);
-  return is_valid_one_byte_unit_first(byte_bin) && is_valid_two_byte_unit_first(byte_bin)
-	  && is_valid_three_byte_unit_first(byte_bin) && is_valid_four_byte_unit_first(byte_bin);
+  return is_valid_one_byte_unit_first(byte_bin) || is_valid_two_byte_unit_first(byte_bin)
+	  || is_valid_three_byte_unit_first(byte_bin) || is_valid_four_byte_unit_first(byte_bin);
 }
 std::vector<std::pair<std::byte, size_t>> utf8::validate(const std::vector<std::byte> &bytes) {
   std::vector<std::pair<std::byte, size_t>> bad_bytes = {};
