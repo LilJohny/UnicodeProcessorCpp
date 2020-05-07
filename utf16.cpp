@@ -21,7 +21,7 @@ inline bool utf16::is_single_unit_point(unsigned short byte_short) {
   return (byte_short >= utf16::SINGLE_UNIT_MIN_1 && byte_short <= utf16::SINGLE_UNIT_MAX_1)
 	  || (byte_short >= utf16::SINGLE_UNIT_MIN_2 && byte_short <= utf16::SINGLE_UNIT_MAX_2);
 }
-bool utf16::is_valid(std::byte previous_byte, std::byte current_byte) {
+bool utf16::is_valid_continuation(std::byte previous_byte, std::byte current_byte) {
   auto previous_byte_short = to_short(previous_byte);
   auto current_byte_short = to_short(current_byte);
   auto single_unit_point = (is_low_surrogate(previous_byte_short) && is_single_unit_point(current_byte_short))
@@ -31,7 +31,10 @@ bool utf16::is_valid(std::byte previous_byte, std::byte current_byte) {
   auto low_surrogate = is_high_surrogate(previous_byte_short) && is_low_surrogate(current_byte_short);
   return single_unit_point || high_surrogate || low_surrogate;
 }
-
+inline bool utf16::is_valid(std::byte byte) {
+  auto byte_short = to_short(byte);
+  return is_high_surrogate(byte_short) || is_low_surrogate(byte_short) || is_single_unit_point(byte_short);
+}
 bool utf16::is_space(const std::vector<std::byte> &bytes) {
   for (auto whitespace : WHITESPACES_S) {
 	if (bytes[0] == unicode::NULL_BYTE && bytes[1] == whitespace) {
@@ -84,11 +87,17 @@ size_t utf16::count_words(const std::vector<std::vector<std::byte> > &bytes, int
 
 std::vector<std::pair<std::byte, size_t>> utf16::validate(const std::vector<std::byte> &bytes) {
   std::vector<std::pair<std::byte, size_t>> bad_bytes = {};
-  if (is_low_surrogate(to_short(bytes[0]))) {
-	bad_bytes.emplace_back(bytes[0], 0);
+  size_t cycle_start = 0;
+  if (!(is_valid(bytes[cycle_start]) && !is_low_surrogate(to_short(bytes[cycle_start])))) {
+	bad_bytes.emplace_back(bytes[cycle_start], cycle_start);
+	cycle_start++;
+	while (!is_valid(bytes[cycle_start])) {
+	  bad_bytes.emplace_back(bytes[cycle_start], cycle_start);
+	  cycle_start++;
+	}
   }
-  for (int i = 1; i < bytes.size(); ++i) {
-	if (!is_valid(bytes[i - 1], bytes[i])) {
+  for (size_t i = cycle_start + 1; i < bytes.size(); ++i) {
+	if (!is_valid_continuation(bytes[i - 1], bytes[i])) {
 	  bad_bytes.emplace_back(bytes[i], i);
 	}
   }

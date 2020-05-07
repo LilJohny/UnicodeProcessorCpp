@@ -57,7 +57,9 @@ const std::vector<std::vector<std::byte>> WHITESPACES_D = {
 	{std::byte('\x00'), std::byte('\x0a')}
 };
 
-bool is_valid(std::byte previous_byte, std::byte current_byte);
+bool is_valid_continuation(std::byte previous_byte, std::byte current_byte);
+
+inline bool is_valid(std::byte);
 
 bool is_space(const std::vector<std::byte> &bytes);
 
