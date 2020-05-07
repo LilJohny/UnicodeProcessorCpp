@@ -31,19 +31,19 @@ bool utf8::is_space(const std::vector<std::byte> &bytes) {
 std::string to_bin(std::byte current_byte) {
   return std::bitset<8>(std::to_integer<size_t>(current_byte)).to_string();
 }
-bool is_valid_one_byte_unit_first(std::string byte_bin) {
+inline bool is_valid_one_byte_unit_first(std::string byte_bin) {
   return byte_bin[0] == '0';
 }
 
-bool is_valid_two_byte_unit_first(std::string byte_bin) {
+inline bool is_valid_two_byte_unit_first(std::string byte_bin) {
   return byte_bin[0] == '1' && byte_bin[1] == '1' && byte_bin[2] == '0';
 }
 
-bool is_valid_three_byte_unit_first(std::string byte_bin) {
+inline bool is_valid_three_byte_unit_first(std::string byte_bin) {
   return byte_bin[0] == '1' && byte_bin[1] == '1' && byte_bin[2] == '1' && byte_bin[2] == '0';
 }
 
-bool is_valid_four_byte_unit_first(std::string byte_bin) {
+inline bool is_valid_four_byte_unit_first(std::string byte_bin) {
   return byte_bin[0] == '1' && byte_bin[1] == '1' && byte_bin[2] == '1' && byte_bin[2] == '1' && byte_bin[2] == '0';
 }
 std::vector<std::vector<std::byte>> utf8::normalize(const std::vector<std::byte> &bytes) {
