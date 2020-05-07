@@ -6,18 +6,30 @@
 #include "utf16.h"
 #include "unicode.h"
 
-bool utf16::is_high_surrogate(std::byte byte) {
-  auto byte_short = std::to_integer<unsigned short>(byte);
+inline unsigned short to_short(std::byte byte) {
+  return std::to_integer<unsigned short>(byte);
+}
+
+inline bool utf16::is_high_surrogate(unsigned short byte_short) {
   return byte_short >= HIGH_SURROGATE_MIN && byte_short <= HIGH_SURROGATE_MAX;
 }
 
-bool utf16::is_low_surrogate(std::byte byte) {
-  auto byte_short = std::to_integer<unsigned short>(byte);
+inline bool utf16::is_low_surrogate(unsigned short byte_short) {
   return byte_short >= LOW_SURROGATE_MIN && byte_short <= LOW_SURROGATE_MAX;
 }
-
-bool utf16::is_valid(std::vector<std::byte> bytes) {
-  return false;
+inline bool utf16::is_single_unit_point(unsigned short byte_short) {
+  return (byte_short >= utf16::SINGLE_UNIT_MIN_1 && byte_short <= utf16::SINGLE_UNIT_MAX_1)
+	  || (byte_short >= utf16::SINGLE_UNIT_MIN_2 && byte_short <= utf16::SINGLE_UNIT_MAX_2);
+}
+bool utf16::is_valid(std::byte previous_byte, std::byte current_byte) {
+  auto previous_byte_short = to_short(previous_byte);
+  auto current_byte_short = to_short(current_byte);
+  auto single_unit_point = (is_low_surrogate(previous_byte_short) && is_single_unit_point(current_byte_short))
+	  || (is_single_unit_point(previous_byte_short) && is_single_unit_point(current_byte_short));
+  auto high_surrogate = (is_low_surrogate(previous_byte_short) && is_high_surrogate(current_byte_short))
+	  || (is_single_unit_point(previous_byte_short) && is_high_surrogate(current_byte_short));
+  auto low_surrogate = is_high_surrogate(previous_byte_short) && is_low_surrogate(current_byte_short);
+  return single_unit_point || high_surrogate || low_surrogate;
 }
 
 bool utf16::is_space(const std::vector<std::byte> &bytes) {
