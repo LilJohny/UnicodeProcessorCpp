@@ -12,6 +12,10 @@ const std::byte BOM_BE_THIRD = std::byte('\xfe');
 const std::byte BOM_BE_FOURTH = std::byte('\xff');
 const std::byte BOM_LE_FIRST = std::byte('\xff');
 const std::byte BOM_LE_SECOND = std::byte('\xfe');
+
+const int MAX_POINT = 1114111;
+const int MIN_POINT = 0;
+
 const std::vector<std::byte> WHITESPACES_S = {std::byte('\x09'), std::byte('\x0a'), std::byte('\x0b'),
 											  std::byte('\x0c'), std::byte('\x0d'), std::byte('\x20'),
 											  std::byte('\x85'), std::byte('\xa0')};
@@ -42,7 +46,7 @@ const std::vector<std::vector<std::byte>> WHITESPACES_D = {
 	{std::byte('\x00'), std::byte('\x09')}
 };
 
-bool is_valid(std::vector<std::byte> bytes);
+inline bool is_valid(std::vector<std::byte> bytes);
 
 bool is_space(const std::vector<std::byte> &bytes);
 

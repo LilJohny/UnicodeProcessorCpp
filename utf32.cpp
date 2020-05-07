@@ -5,8 +5,9 @@
 #include "utf32.h"
 #include "unicode.h"
 
-bool utf32::is_valid(std::vector<std::byte> bytes) {
-  return false;
+inline bool utf32::is_valid(std::vector<std::byte> bytes) {
+  int value_integer = int(bytes[0] << 24 | bytes[1] << 16 | bytes[2] << 8 | bytes[3]);
+  return value_integer <= MAX_POINT && value_integer >= MIN_POINT;
 }
 
 bool utf32::is_space(const std::vector<std::byte> &bytes) {
@@ -59,5 +60,14 @@ size_t utf32::count_words(const std::vector<std::vector<std::byte> > &bytes, int
 }
 
 std::vector<std::pair<std::byte, size_t>> utf32::validate(const std::vector<std::byte> &bytes) {
-  return {};
+  std::vector<std::pair<std::byte, size_t>> bad_bytes = {};
+  for (int i = 0; i < bytes.size(); i += 4) {
+	std::vector<std::byte> buffer(bytes.begin() + i, bytes.begin() + i + 4);
+	if (!is_valid(buffer)) {
+	  for (int j = 0; j < 4; ++j) {
+		bad_bytes.emplace_back(buffer[j], i + j);
+	  }
+	}
+  }
+  return bad_bytes;
 }
