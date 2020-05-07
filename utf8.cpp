@@ -115,7 +115,7 @@ std::vector<std::pair<std::byte, size_t>> utf8::validate(const std::vector<std::
     bad_bytes.emplace_back(bytes[cycle_start], cycle_start);
     cycle_start++;
   }
-  for (int i = cycle_start+1; i < bytes.size(); ++i) {
+  for (size_t i = cycle_start+1; i < bytes.size(); ++i) {
 	if (!utf8::is_valid_continuation(bytes[i - 1], bytes[i])) {
 	  bad_bytes.emplace_back(bytes[i], i);
 	}
