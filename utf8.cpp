@@ -111,5 +111,5 @@ std::vector<std::pair<std::byte, size_t>> utf8::validate(const std::vector<std::
 	  bad_bytes.emplace_back(bytes[i], i);
 	}
   }
-  return {};
+  return bad_bytes;
 }
