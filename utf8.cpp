@@ -84,7 +84,7 @@ size_t utf8::count_words(const std::vector<std::vector<std::byte>> &bytes, [[may
   }
   return words_num;
 }
-bool utf8::is_valid(std::byte previous_byte, std::byte current_byte) {
+bool utf8::is_valid_continuation(std::byte previous_byte, std::byte current_byte) {
   auto previous_byte_bin = to_bin(previous_byte);
   auto current_byte_bin = to_bin(current_byte);
 
@@ -103,16 +103,20 @@ bool utf8::is_valid(std::byte previous_byte, std::byte current_byte) {
 
   return new_point_start || two_unit_point_second || three_unit_point_second || four_unit_point_second;
 }
-
+inline bool utf8::is_valid(std::byte byte) {
+  auto byte_bin = to_bin(byte);
+  return is_valid_one_byte_unit_first(byte_bin) && is_valid_two_byte_unit_first(byte_bin)
+	  && is_valid_three_byte_unit_first(byte_bin) && is_valid_four_byte_unit_first(byte_bin);
+}
 std::vector<std::pair<std::byte, size_t>> utf8::validate(const std::vector<std::byte> &bytes) {
   std::vector<std::pair<std::byte, size_t>> bad_bytes = {};
-  auto first_byte_bin = to_bin(bytes[0]);
-  if (!is_valid_one_byte_unit_first(first_byte_bin) && !is_valid_two_byte_unit_first(first_byte_bin)
-	  && !is_valid_three_byte_unit_first(first_byte_bin) && !is_valid_four_byte_unit_first(first_byte_bin)) {
-	bad_bytes.emplace_back(bytes[0], 0);
+  size_t cycle_start = 0;
+  while (!is_valid(bytes[cycle_start])){
+    bad_bytes.emplace_back(bytes[cycle_start], cycle_start);
+    cycle_start++;
   }
-  for (int i = 1; i < bytes.size(); ++i) {
-	if (!utf8::is_valid(bytes[i - 1], bytes[i])) {
+  for (int i = cycle_start+1; i < bytes.size(); ++i) {
+	if (!utf8::is_valid_continuation(bytes[i - 1], bytes[i])) {
 	  bad_bytes.emplace_back(bytes[i], i);
 	}
   }
