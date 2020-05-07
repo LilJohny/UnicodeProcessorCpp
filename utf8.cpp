@@ -106,6 +106,11 @@ bool utf8::is_valid(std::byte previous_byte, std::byte current_byte) {
 
 std::vector<std::pair<std::byte, size_t>> utf8::validate(const std::vector<std::byte> &bytes) {
   std::vector<std::pair<std::byte, size_t>> bad_bytes = {};
+  auto first_byte_bin = to_bin(bytes[0]);
+  if (!is_valid_one_byte_unit_first(first_byte_bin) && !is_valid_two_byte_unit_first(first_byte_bin)
+	  && !is_valid_three_byte_unit_first(first_byte_bin) && !is_valid_four_byte_unit_first(first_byte_bin)) {
+	bad_bytes.emplace_back(bytes[0], 0);
+  }
   for (int i = 1; i < bytes.size(); ++i) {
 	if (!utf8::is_valid(bytes[i - 1], bytes[i])) {
 	  bad_bytes.emplace_back(bytes[i], i);
