@@ -7,9 +7,9 @@
 
 inline bool utf32::is_valid(std::vector<std::byte> bytes) {
   int value_integer =
-	  (std::to_integer<int>(bytes[0]) << 24u) | (std::to_integer<int>(bytes[1]) << 16u)
-		  | (std::to_integer<int>(bytes[2]) << 8u)
-		  | (std::to_integer<int>(bytes[3]));
+	  std::to_integer<int>(bytes[0]) << 24u | std::to_integer<int>(bytes[1]) << 16u
+		  | std::to_integer<int>(bytes[2]) << 8u
+		  | std::to_integer<int>(bytes[3]);
 
   return value_integer <= MAX_POINT && value_integer >= MIN_POINT;
 }
