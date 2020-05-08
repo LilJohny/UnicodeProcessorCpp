@@ -65,6 +65,6 @@ size_t count_words(const std::vector<std::vector<std::byte>> &bytes, [[maybe_unu
 
 std::vector<std::vector<std::byte>> normalize(const std::vector<std::byte> &bytes);
 
-std::vector<std::pair<std::byte, size_t>> validate(const std::vector<std::byte> &bytes);
+std::vector<std::pair<std::byte, size_t>> validate(const std::vector<std::byte> &bytes, int order);
 }
 #endif //UNICODEPROCESSOR_UTF8_H

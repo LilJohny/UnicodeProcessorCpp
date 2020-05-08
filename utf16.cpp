@@ -85,7 +85,7 @@ size_t utf16::count_words(const std::vector<std::vector<std::byte> > &bytes, int
   return words_num;
 }
 
-std::vector<std::pair<std::byte, size_t>> utf16::validate(const std::vector<std::byte> &bytes) {
+std::vector<std::pair<std::byte, size_t>> utf16::validate(const std::vector<std::byte> &bytes, int order) {
   std::vector<std::pair<std::byte, size_t>> bad_bytes = {};
   size_t cycle_start = 0;
   if (!(is_valid(bytes[cycle_start]) && !is_low_surrogate(to_short(bytes[cycle_start])))) {

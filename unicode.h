@@ -21,7 +21,7 @@ std::pair<int, std::string> get_encoding(std::vector<std::byte> &bytes);
 
 std::vector<std::byte> read_all_bytes_fom_file(const std::string &current_file);
 
-std::vector<std::pair<std::byte, size_t>> validate(const std::vector<std::byte> &bytes, int encoding);
+std::vector<std::pair<std::byte, size_t>> validate(const std::vector<std::byte> &bytes, const std::pair<int, std::string>& encoding);
 
 }
 #endif //UNICODEPROCESSOR_UNICODE_H

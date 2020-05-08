@@ -109,7 +109,7 @@ int main(int argc, char *argv[]) {
 	file_encoding = deducted_encoding;
   }
 
-  auto bad_bytes = unicode::validate(file_bytes, file_encoding.first);
+  auto bad_bytes = unicode::validate(file_bytes, file_encoding);
   if (!bad_bytes.empty()) {
 	std::cout << input_file << "has bad encoding." << std::endl;
 	std::cout << "Number of bad bits: " << bad_bytes.size() << std::endl;
