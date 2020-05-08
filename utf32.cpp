@@ -65,9 +65,18 @@ size_t utf32::count_words(const std::vector<std::vector<std::byte> > &bytes, int
 
 std::vector<std::pair<std::byte, size_t>> utf32::validate(const std::vector<std::byte> &bytes, int order) {
   std::vector<std::pair<std::byte, size_t>> bad_bytes = {};
+  std::function<std::vector<std::byte>(std::vector<std::byte>)> func;
+  if (order == -1) {
+	func = [](std::vector<std::byte> bytes) {
+	  std::reverse(bytes.begin(), bytes.end());
+	  return bytes;
+	};
+  } else {
+	func = [](const std::vector<std::byte> &bytes) { return bytes; };
+  }
   for (int i = 0; i < bytes.size(); i += 4) {
 	std::vector<std::byte> buffer(bytes.begin() + i, bytes.begin() + i + 4);
-	if (!is_valid(buffer)) {
+	if (!is_valid(func(buffer))) {
 	  for (int j = 0; j < 4; ++j) {
 		bad_bytes.emplace_back(buffer[j], i + j);
 	  }
