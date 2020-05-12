@@ -54,10 +54,13 @@ size_t unicode::count_code_units(const std::vector<std::byte> &bytes) {
 size_t unicode::count_words(const std::vector<std::vector<std::byte> > &bytes,
 							const std::pair<int, std::string> &encoding) {
   int order = encoding.second == "le" ? -1 : 1;
+  std::function<size_t(const std::vector<std::vector<std::byte>> &, int)> utf_8_words_counter{utf8::count_words};
+  std::function<size_t(const std::vector<std::vector<std::byte>> &, int)> utf_16_words_counter{utf16::count_words};
+  std::function<size_t(const std::vector<std::vector<std::byte>> &, int)> utf_32_words_counter{utf32::count_words};
   std::map<int, std::function<size_t(const std::vector<std::vector<std::byte>> &, int)>> counters
-	  = {{8, std::function(utf8::count_words)},
-		 {16, std::function(utf16::count_words)},
-		 {32, std::function(utf32::count_words)}};
+	  = {{8, utf_8_words_counter},
+		 {16, utf_16_words_counter},
+		 {32, utf_32_words_counter}};
   auto counter = counters[encoding.first];
   auto result = counter(bytes, order);
   return result;
@@ -66,23 +69,32 @@ size_t unicode::count_words(const std::vector<std::vector<std::byte> > &bytes,
 std::vector<std::vector<std::byte>>
 unicode::normalize_according_to_encoding(const std::vector<std::byte> &bytes, int encoding) {
   std::vector<std::vector<std::byte>> normalized_bytes;
+  std::function<std::vector<std::vector<std::byte>>(std::vector<std::byte>)> utf_8_normalizer{utf8::normalize};
+  std::function<std::vector<std::vector<std::byte>>(std::vector<std::byte>)> utf_16_normalizer{utf16::normalize};
+  std::function<std::vector<std::vector<std::byte>>(std::vector<std::byte>)> utf_32_normalizer{utf32::normalize};
   std::map<int, std::function<std::vector<std::vector<std::byte>>(std::vector<std::byte>)>> normalizers
-	  = {{8, std::function(utf8::normalize)},
-		 {16, std::function(utf16::normalize)},
-		 {32, std::function(utf32::normalize)}};
+	  = {{8, utf_8_normalizer},
+		 {16, utf_16_normalizer},
+		 {32, utf_32_normalizer}};
   auto normalizer = normalizers[encoding];
   normalized_bytes = normalizer(bytes);
   return normalized_bytes;
 }
 
 std::vector<std::pair<std::byte, size_t>> unicode::validate(const std::vector<std::byte> &bytes,
-															const std::pair<int, std::string>& encoding) {
+															const std::pair<int, std::string> &encoding) {
   std::vector<std::vector<std::byte>> normalized_bytes;
+  std::function<std::vector<std::pair<std::byte, size_t>>(const std::vector<std::byte> &, int)>
+	  utf8_validator{utf8::validate};
+  std::function<std::vector<std::pair<std::byte, size_t>>(const std::vector<std::byte> &, int)>
+	  utf16_validator{utf16::validate};
+  std::function<std::vector<std::pair<std::byte, size_t>>(const std::vector<std::byte> &, int)>
+	  utf32_validator{utf32::validate};
   std::map<int, std::function<std::vector<std::pair<std::byte, size_t>>(const std::vector<std::byte> &, int)>>
 	  validators
-	  = {{8, std::function(utf8::validate)},
-		 {16, std::function(utf16::validate)},
-		 {32, std::function(utf32::validate)}};
+	  = {{8, utf8_validator},
+		 {16, utf16_validator},
+		 {32, utf32_validator}};
   auto validator = validators[encoding.first];
   int order = encoding.second == "le" ? -1 : 1;
   auto bad_bits = validator(bytes, order);
