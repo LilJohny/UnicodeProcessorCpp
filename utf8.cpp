@@ -2,9 +2,7 @@
 // Created by denis on 26.04.20.
 //
 #include <stdexcept>
-#include <functional>
 #include "utf8.h"
-#include <map>
 
 bool utf8::is_space(const std::vector<std::byte> &bytes) {
   if (bytes.size() == 4) {
