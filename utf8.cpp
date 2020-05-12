@@ -28,9 +28,11 @@ bool utf8::is_space(const std::vector<std::byte> &bytes) {
   }
   return false;
 }
+
 std::string to_bin(std::byte current_byte) {
   return std::bitset<8>(std::to_integer<size_t>(current_byte)).to_string();
 }
+
 inline bool is_valid_one_byte_unit_first(std::string byte_bin) {
   return byte_bin[0] == '0';
 }
@@ -46,9 +48,11 @@ inline bool is_valid_three_byte_unit_first(std::string byte_bin) {
 inline bool is_valid_four_byte_unit_first(std::string byte_bin) {
   return byte_bin[0] == '1' && byte_bin[1] == '1' && byte_bin[2] == '1' && byte_bin[3] == '1' && byte_bin[4] == '0';
 }
+
 inline bool is_valid_continuation_byte(std::string byte_bin) {
   return byte_bin[0] == '1' && byte_bin[1] == '0';
 }
+
 std::vector<std::vector<std::byte>> utf8::normalize(const std::vector<std::byte> &bytes) {
   std::vector<std::vector<std::byte>> normalized_bytes;
   int i = 0;
@@ -87,6 +91,7 @@ size_t utf8::count_words(const std::vector<std::vector<std::byte>> &bytes, [[may
   }
   return words_num;
 }
+
 bool utf8::is_valid_continuation(std::byte previous_byte, std::byte current_byte) {
   auto previous_byte_bin = to_bin(previous_byte);
   auto current_byte_bin = to_bin(current_byte);
@@ -110,11 +115,13 @@ bool utf8::is_valid_continuation(std::byte previous_byte, std::byte current_byte
   return new_point_start || two_unit_point_second || three_unit_point_second || four_unit_point_second
 	  || second_continuation;
 }
+
 inline bool utf8::is_valid(std::byte byte) {
   auto byte_bin = to_bin(byte);
   return is_valid_one_byte_unit_first(byte_bin) || is_valid_two_byte_unit_first(byte_bin)
 	  || is_valid_three_byte_unit_first(byte_bin) || is_valid_four_byte_unit_first(byte_bin);
 }
+
 std::vector<std::pair<std::byte, size_t>> utf8::validate(const std::vector<std::byte> &bytes, int order) {
   std::vector<std::pair<std::byte, size_t>> bad_bytes = {};
   size_t cycle_start = 0;
