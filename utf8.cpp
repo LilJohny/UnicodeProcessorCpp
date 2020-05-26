@@ -94,9 +94,21 @@ size_t utf8::count_words(const std::vector<std::vector<std::byte>> &bytes, [[may
 
 std::vector<int> utf8::validate_batch(const std::vector<std::byte> &batch) {
 	std::vector<int> bad_bytes_indexes;
-	for (int i = 1; i < batch.size(); ++i) {
-		if (!is_valid_continuation_byte(to_bin(batch[i]))) {
-			bad_bytes_indexes.push_back(i);
+	auto batch_boundaries = utf8::boundaries.at(batch.size());
+	for (int j = 0; j < batch.size(); ++j) {
+		bool not_valid = true;
+		for (auto &batch_boundary : batch_boundaries) {
+
+			if ((batch_boundary[j].size() == 2
+					&& (batch[j] >= batch_boundary[j][0] || batch[j] <= batch_boundary[j][1]))
+					|| (batch_boundary[j].size() == 1 && batch[j] != batch_boundary[j][0])) {
+				not_valid = false;
+				break;
+			}
+
+		}
+		if (not_valid) {
+			bad_bytes_indexes.emplace_back(j);
 		}
 	}
 	return bad_bytes_indexes;
