@@ -111,7 +111,7 @@ int main(int argc, char *argv[]) {
 
 	auto bad_bytes = unicode::validate(file_bytes, file_encoding);
 	if (!bad_bytes.empty()) {
-		std::cout << input_file << "has bad encoding." << std::endl;
+		std::cout << input_file << " has bad encoding." << std::endl;
 		std::cout << "Number of bad bits: " << bad_bytes.size() << std::endl;
 		std::cout << "List of bad bits :" << std::endl;
 		for (auto &bad_byte : bad_bytes) {
