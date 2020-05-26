@@ -17,22 +17,26 @@ inline bool utf16::is_high_surrogate(unsigned short byte_short) {
 inline bool utf16::is_low_surrogate(unsigned short byte_short) {
 	return byte_short >= LOW_SURROGATE_MIN && byte_short <= LOW_SURROGATE_MAX;
 }
+inline int bytes_to_int(std::pair<std::byte, std::byte> bytes) {
+	return std::to_integer<int>(bytes.first) << 8u | std::to_integer<int>(bytes.second);
+}
 inline bool utf16::is_single_unit_point(unsigned short byte_short) {
 	return (byte_short >= utf16::SINGLE_UNIT_MIN_1 && byte_short <= utf16::SINGLE_UNIT_MAX_1)
 			|| (byte_short >= utf16::SINGLE_UNIT_MIN_2 && byte_short <= utf16::SINGLE_UNIT_MAX_2);
 }
-bool utf16::is_valid_continuation(std::byte previous_byte, std::byte current_byte) {
-	auto previous_byte_short = to_short(previous_byte);
-	auto current_byte_short = to_short(current_byte);
-	auto single_unit_point = (is_low_surrogate(previous_byte_short) && is_single_unit_point(current_byte_short))
-			|| (is_single_unit_point(previous_byte_short) && is_single_unit_point(current_byte_short));
-	auto high_surrogate = (is_low_surrogate(previous_byte_short) && is_high_surrogate(current_byte_short))
-			|| (is_single_unit_point(previous_byte_short) && is_high_surrogate(current_byte_short));
-	auto low_surrogate = is_high_surrogate(previous_byte_short) && is_low_surrogate(current_byte_short);
+bool utf16::is_valid_continuation(std::pair<std::byte, std::byte> previous_pair,
+																	std::pair<std::byte, std::byte> current_pair) {
+	auto previous_pair_int = bytes_to_int(previous_pair);
+	auto current_pair_int = bytes_to_int(current_pair);
+	auto single_unit_point = (is_low_surrogate(previous_pair_int) && is_single_unit_point(current_pair_int))
+			|| (is_single_unit_point(previous_pair_int) && is_single_unit_point(current_pair_int));
+	auto high_surrogate = (is_low_surrogate(previous_pair_int) && is_high_surrogate(current_pair_int))
+			|| (is_single_unit_point(previous_pair_int) && is_high_surrogate(current_pair_int));
+	auto low_surrogate = is_high_surrogate(previous_pair_int) && is_low_surrogate(current_pair_int);
 	return single_unit_point || high_surrogate || low_surrogate;
 }
-inline bool utf16::is_valid(std::byte byte) {
-	auto byte_short = to_short(byte);
+inline bool utf16::is_valid(std::pair<std::byte, std::byte> pair) {
+	auto byte_short = bytes_to_int(pair);
 	return is_high_surrogate(byte_short) || is_low_surrogate(byte_short) || is_single_unit_point(byte_short);
 }
 bool utf16::is_space(const std::vector<std::byte> &bytes) {
@@ -90,22 +94,32 @@ std::vector<std::pair<std::byte, size_t>> utf16::validate(std::vector<std::byte>
 	size_t cycle_start = 0;
 	if (order == -1) {
 		for (int i = 0; i < bytes.size(); ++i) {
-			if (is_low_surrogate(to_short(bytes[i])) && is_high_surrogate(to_short(bytes[i + 1]))) {
-				std::swap(bytes[i], bytes[i + 1]);
+			auto first = bytes_to_int(std::make_pair(bytes[i], bytes[i + 1]));
+			auto second = bytes_to_int(std::make_pair(bytes[i + 2], bytes[i + 3]));
+			if (is_low_surrogate(first) && is_high_surrogate(second)) {
+				std::swap(bytes[i], bytes[i + 2]);
+				std::swap(bytes[i + 1], bytes[i + 3]);
 			}
 		}
 	}
-	if (!(is_valid(bytes[cycle_start]) && !is_low_surrogate(to_short(bytes[cycle_start])))) {
+	auto pair = std::make_pair(bytes[cycle_start], bytes[cycle_start + 1]);
+	if (!(is_valid(pair) && !is_low_surrogate(bytes_to_int(pair)))) {
 		bad_bytes.emplace_back(bytes[cycle_start], cycle_start);
-		cycle_start++;
-		while (!is_valid(bytes[cycle_start])) {
+		bad_bytes.emplace_back(bytes[cycle_start + 1], cycle_start + 1);
+		cycle_start += 2;
+		pair = std::make_pair(bytes[cycle_start], bytes[cycle_start + 1]);
+		while (!is_valid(pair)) {
 			bad_bytes.emplace_back(bytes[cycle_start], cycle_start);
-			cycle_start++;
+			bad_bytes.emplace_back(bytes[cycle_start + 1], cycle_start + 1);
+			cycle_start += 2;
+			pair = std::make_pair(bytes[cycle_start], bytes[cycle_start + 1]);
 		}
 	}
-	for (size_t i = cycle_start + 1; i < bytes.size(); ++i) {
-		if (!is_valid_continuation(bytes[i - 1], bytes[i])) {
+	for (size_t i = cycle_start + 2; i < bytes.size(); i+=2) {
+		auto new_pair = std::make_pair(bytes[i], bytes[i + 1]);
+		if (!is_valid_continuation(pair, new_pair)) {
 			bad_bytes.emplace_back(bytes[i], i);
+			bad_bytes.emplace_back(bytes[i + 1], i + 1);
 		}
 	}
 	return bad_bytes;
