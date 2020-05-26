@@ -7,6 +7,8 @@
 
 #include <cstddef>
 #include <vector>
+#include <map>
+#include <array>
 #include <bitset>
 #include "utf8.h"
 
@@ -26,11 +28,11 @@ const int SINGLE_UNIT_MIN = 0;
 
 const std::vector<std::byte> WHITESPACES_S = {std::byte('\x09'), std::byte('\x0a'), std::byte('\x0b'),
 																							std::byte('\x0c'), std::byte('\x0d'), std::byte('\x20')};
-const std::vector<std::vector<std::byte>> WHITESPACES_D = {
+const std::vector<std::array<std::byte, 2>> WHITESPACES_D = {
 		{std::byte('\xc2'), std::byte('\x85')},
 		{std::byte('\xc2'), std::byte('\xa0')}
 };
-const std::vector<std::vector<std::byte>> WHITESPACES_T = {
+const std::vector<std::array<std::byte, 3>> WHITESPACES_T = {
 		{std::byte('\xe1'), std::byte('\x9a'), std::byte('\x80')},
 		{std::byte('\xe2'), std::byte('\x80'), std::byte('\x81')},
 		{std::byte('\xe2'), std::byte('\x80'), std::byte('\x82')},
@@ -54,6 +56,31 @@ const std::vector<std::vector<std::byte>> WHITESPACES_T = {
 		{std::byte('\xe2'), std::byte('\x81'), std::byte('\xa0')},
 		{std::byte('\xef'), std::byte('\xbb'), std::byte('\xbf')}
 };
+const std::vector<std::vector<std::vector<std::byte>>>
+		boundaries_length_one = {{{std::byte('\x00'), std::byte('\x7f')}}};
+const std::vector<std::vector<std::vector<std::byte>>>
+		boundaries_length_two = {{{std::byte('\xc2'), std::byte('\xdf')}, {std::byte('\x80'), std::byte('\xbf')}}};
+const std::vector<std::vector<std::vector<std::byte>>> boundaries_length_three = {
+		{{std::byte('\xe0')}, {std::byte('\xa0'), std::byte('\xbf')}, {std::byte('\x80'), std::byte('\xbf')}},
+		{{std::byte('\xe1'), std::byte('\xec')}, {std::byte('\x80'), std::byte('\xbf')},
+		 {std::byte('\x80'), std::byte('\xbf')}},
+		{{std::byte('\xe0')}, {std::byte('\x80'), std::byte('\x9f')}, {std::byte('\x80'), std::byte('\xbf')}},
+		{{std::byte('\xee'), std::byte('\xef')}, {std::byte('\x80'), std::byte('\xbf')},
+		 {std::byte('\x80'), std::byte('\xbf')}}
+};
+const std::vector<std::vector<std::vector<std::byte>>> boundaries_length_four = {
+		{{std::byte('\xf0')}, {std::byte('\x90'), std::byte('\xbf')}, {std::byte('\x80'), std::byte('\xbf')},
+		 {std::byte('\x80'), std::byte('\xbf')}},
+		{{std::byte('\xf1'), std::byte('\xf3')}, {std::byte('\x80'), std::byte('\xbf')},
+		 {std::byte('\x80'), std::byte('\xbf')}, {std::byte('\x80'), std::byte('\xbf')}},
+		{{std::byte('\xf4')}, {std::byte('\x80'), std::byte('\x8f')}, {std::byte('\x80'), std::byte('\xbf')},
+		 {std::byte('\x80'), std::byte('\xbf')}}
+};
+const std::map<int, const std::vector<std::vector<std::vector<std::byte>>>> boundaries = {
+		{1, boundaries_length_one},
+		{2, boundaries_length_two},
+		{3, boundaries_length_three},
+		{4, boundaries_length_four}};
 
 std::vector<int> validate_batch(const std::vector<std::byte> &batch);
 
