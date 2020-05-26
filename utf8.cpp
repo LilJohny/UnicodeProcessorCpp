@@ -44,7 +44,7 @@ bool satisfies_boundary(std::byte byte, std::vector<std::byte> boundary) {
 	return (boundary.size() == 1 && byte == boundary[0])
 			|| (boundary.size() == 2 && byte >= boundary[0] && byte <= boundary[1]);
 }
-bool check_first_byte_boundary_condition(std::byte byte, const std::vector<std::vector<std::byte>>& boundaries) {
+bool check_first_byte_boundary_condition(std::byte byte, const std::vector<std::vector<std::byte>> &boundaries) {
 	bool result = false;
 	for (auto &boundary : boundaries) {
 		if (satisfies_boundary(byte, boundary)) {
@@ -179,8 +179,8 @@ std::vector<std::pair<std::byte, size_t>> utf8::validate(const std::vector<std::
 		std::vector<std::byte> batch{bytes.begin() + i, bytes.begin() + i + length};
 		auto batch_bad_bytes_indices = validate_batch(batch);
 		if (!batch_bad_bytes_indices.empty()) {
-			for (int j = 0; j < batch_bad_bytes_indices.size(); ++j) {
-				bad_bytes.emplace_back(bytes[i + j], i + j);
+			for (auto bad_bytes_index : batch_bad_bytes_indices) {
+				bad_bytes.emplace_back(bytes[i + bad_bytes_index], i + bad_bytes_index);
 			}
 		}
 		i += length;
