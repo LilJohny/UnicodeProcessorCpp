@@ -89,7 +89,7 @@ int main(int argc, char *argv[]) {
 	std::pair<int, std::string> file_encoding;
 	if (deducted_encoding.first == 0 && encoding.empty()) {
 		throw std::runtime_error(
-				"File is encoded without BOM , so program needs encoding as its second argument, but it was`nt supplied!");
+				"File is encoded without BOM , so program needs encoding as its second argument, but it was not  supplied!");
 	} else if (deducted_encoding.first == 0 && !encoding.empty()) {
 
 		try {
