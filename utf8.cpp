@@ -100,8 +100,8 @@ std::vector<int> utf8::validate_batch(const std::vector<std::byte> &batch) {
 		for (auto &batch_boundary : batch_boundaries) {
 
 			if ((batch_boundary[j].size() == 2
-					&& (batch[j] >= batch_boundary[j][0] || batch[j] <= batch_boundary[j][1]))
-					|| (batch_boundary[j].size() == 1 && batch[j] != batch_boundary[j][0])) {
+					&& batch[j] >= batch_boundary[j][0] && batch[j] <= batch_boundary[j][1])
+					|| (batch_boundary[j].size() == 1 && batch[j] == batch_boundary[j][0])) {
 				not_valid = false;
 				break;
 			}
