@@ -110,13 +110,15 @@ int main(int argc, char *argv[]) {
 	}
 
 	auto bad_bytes = unicode::validate(file_bytes, file_encoding);
+
 	if (!bad_bytes.empty()) {
 		std::cout << input_file << " has bad encoding." << std::endl;
 		std::cout << "Number of bad bits: " << bad_bytes.size() << std::endl;
 		std::cout << "List of bad bits :" << std::endl;
+		int bom_bias = file_encoding.second.empty() ? 0 : 3;
 		for (auto &bad_byte : bad_bytes) {
 			std::cout << std::hex << std::to_integer<int>(bad_byte.first);
-			std::cout << std::dec << " at " << bad_byte.second << " position" << std::endl;
+			std::cout << std::dec << " at " << bad_byte.second+bom_bias << " position" << std::endl;
 		}
 		return 3;
 	}
