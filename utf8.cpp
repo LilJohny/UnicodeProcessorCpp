@@ -151,7 +151,12 @@ inline bool utf8::is_valid_start(std::byte byte) {
 	return is_valid_one_byte_unit_first(byte) || is_valid_two_byte_unit_first(byte)
 			|| is_valid_three_byte_unit_first(byte) || is_valid_four_byte_unit_first(byte);
 }
-
+void bad_bytes_indices_post_processing(std::vector<int> &bad_bytes_indices, const std::vector<std::byte> &batch) {
+	if (batch.size() - bad_bytes_indices.size() == 1
+			&& std::find(bad_bytes_indices.begin(), bad_bytes_indices.end(), 0) == bad_bytes_indices.end()) {
+		bad_bytes_indices = {0};
+	}
+}
 std::vector<std::pair<std::byte, size_t>> utf8::validate(const std::vector<std::byte> &bytes, int order) {
 	std::vector<std::pair<std::byte, size_t>> bad_bytes = {};
 	size_t i = 0;
@@ -179,6 +184,7 @@ std::vector<std::pair<std::byte, size_t>> utf8::validate(const std::vector<std::
 		std::vector<std::byte> batch{bytes.begin() + i, bytes.begin() + i + length};
 		auto batch_bad_bytes_indices = validate_batch(batch);
 		if (!batch_bad_bytes_indices.empty()) {
+			bad_bytes_indices_post_processing(batch_bad_bytes_indices, batch);
 			for (auto bad_bytes_index : batch_bad_bytes_indices) {
 				bad_bytes.emplace_back(bytes[i + bad_bytes_index], i + bad_bytes_index);
 			}
