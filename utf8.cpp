@@ -32,25 +32,63 @@ bool utf8::is_space(const std::vector<std::byte> &bytes) {
 std::string to_bin(std::byte current_byte) {
 	return std::bitset<8>(std::to_integer<size_t>(current_byte)).to_string();
 }
-
-inline bool is_valid_one_byte_unit_first(std::string byte_bin) {
-	return byte_bin[0] == '0';
+std::vector<std::vector<std::byte>> get_first_byte_boundaries(std::vector<std::vector<std::vector<std::byte>>> current_boundaries) {
+	std::vector<std::vector<std::byte>> first_byte_boundaries = {};
+	first_byte_boundaries.reserve(current_boundaries.size());
+	for (auto &current_boundary : current_boundaries) {
+		first_byte_boundaries.emplace_back(current_boundary[0]);
+	}
+	return first_byte_boundaries;
+}
+bool satisfies_boundary(std::byte byte, std::vector<std::byte> boundary) {
+	return (boundary.size() == 1 && byte == boundary[0])
+			|| (boundary.size() == 2 && byte >= boundary[0] && byte <= boundary[1]);
+}
+bool check_first_byte_boundary_condition(std::byte byte, const std::vector<std::vector<std::byte>>& boundaries) {
+	bool result = false;
+	for (auto &boundary : boundaries) {
+		if (satisfies_boundary(byte, boundary)) {
+			result = true;
+			break;
+		}
+	}
+	return result;
+}
+inline bool is_valid_one_byte_unit_first(std::byte byte) {
+	auto byte_bin = to_bin(byte);
+	auto bin_condition = byte_bin[0] == '0';
+	auto current_boundaries = utf8::boundaries.at(1);
+	std::vector<std::vector<std::byte>> first_byte_boundaries = get_first_byte_boundaries(current_boundaries);
+	auto first_byte_boundary_condition = check_first_byte_boundary_condition(byte, first_byte_boundaries);
+	return bin_condition && first_byte_boundary_condition;
 }
 
-inline bool is_valid_two_byte_unit_first(std::string byte_bin) {
-	return byte_bin[0] == '1' && byte_bin[1] == '1' && byte_bin[2] == '0';
+inline bool is_valid_two_byte_unit_first(std::byte byte) {
+	auto byte_bin = to_bin(byte);
+	auto bin_condition = byte_bin[0] == '1' && byte_bin[1] == '1' && byte_bin[2] == '0';
+	auto current_boundaries = utf8::boundaries.at(2);
+	std::vector<std::vector<std::byte>> first_byte_boundaries = get_first_byte_boundaries(current_boundaries);
+	auto first_byte_boundary_condition = check_first_byte_boundary_condition(byte, first_byte_boundaries);
+	return bin_condition && first_byte_boundary_condition;
 }
 
-inline bool is_valid_three_byte_unit_first(std::string byte_bin) {
-	return byte_bin[0] == '1' && byte_bin[1] == '1' && byte_bin[2] == '1' && byte_bin[3] == '0';
+inline bool is_valid_three_byte_unit_first(std::byte byte) {
+	auto byte_bin = to_bin(byte);
+	auto bin_condition = byte_bin[0] == '1' && byte_bin[1] == '1' && byte_bin[2] == '1' && byte_bin[3] == '0';
+	auto current_boundaries = utf8::boundaries.at(3);
+	std::vector<std::vector<std::byte>> first_byte_boundaries = get_first_byte_boundaries(current_boundaries);
+	auto first_byte_boundary_condition = check_first_byte_boundary_condition(byte, first_byte_boundaries);
+	return bin_condition && first_byte_boundary_condition;
 }
 
-inline bool is_valid_four_byte_unit_first(std::string byte_bin) {
-	return byte_bin[0] == '1' && byte_bin[1] == '1' && byte_bin[2] == '1' && byte_bin[3] == '1' && byte_bin[4] == '0';
-}
-
-inline bool is_valid_continuation_byte(std::string byte_bin) {
-	return byte_bin[0] == '1' && byte_bin[1] == '0';
+inline bool is_valid_four_byte_unit_first(std::byte byte) {
+	auto byte_bin = to_bin(byte);
+	auto bin_condition =
+			byte_bin[0] == '1' && byte_bin[1] == '1' && byte_bin[2] == '1' && byte_bin[3] == '1' && byte_bin[4] == '0';
+	auto current_boundaries = utf8::boundaries.at(4);
+	std::vector<std::vector<std::byte>> first_byte_boundaries = get_first_byte_boundaries(current_boundaries);
+	auto first_byte_boundary_condition = check_first_byte_boundary_condition(byte, first_byte_boundaries);
+	return bin_condition && first_byte_boundary_condition;
 }
 
 std::vector<std::vector<std::byte>> utf8::normalize(const std::vector<std::byte> &bytes) {
@@ -58,15 +96,14 @@ std::vector<std::vector<std::byte>> utf8::normalize(const std::vector<std::byte>
 	int i = 0;
 	while (i < bytes.size()) {
 		std::byte current_byte = bytes[i];
-		auto byte_bin = to_bin(current_byte);
 		int length = -1;
-		if (is_valid_one_byte_unit_first(byte_bin)) {
+		if (is_valid_one_byte_unit_first(current_byte)) {
 			length = 1;
-		} else if (is_valid_two_byte_unit_first(byte_bin)) {
+		} else if (is_valid_two_byte_unit_first(current_byte)) {
 			length = 2;
-		} else if (is_valid_three_byte_unit_first(byte_bin)) {
+		} else if (is_valid_three_byte_unit_first(current_byte)) {
 			length = 3;
-		} else if (is_valid_four_byte_unit_first(byte_bin)) {
+		} else if (is_valid_four_byte_unit_first(current_byte)) {
 			length = 4;
 		}
 		if (length == -1) {
@@ -98,14 +135,10 @@ std::vector<int> utf8::validate_batch(const std::vector<std::byte> &batch) {
 	for (int j = 0; j < batch.size(); ++j) {
 		bool not_valid = true;
 		for (auto &batch_boundary : batch_boundaries) {
-
-			if ((batch_boundary[j].size() == 2
-					&& batch[j] >= batch_boundary[j][0] && batch[j] <= batch_boundary[j][1])
-					|| (batch_boundary[j].size() == 1 && batch[j] == batch_boundary[j][0])) {
+			if (satisfies_boundary(batch[j], batch_boundary[j])) {
 				not_valid = false;
 				break;
 			}
-
 		}
 		if (not_valid) {
 			bad_bytes_indexes.emplace_back(j);
@@ -115,9 +148,8 @@ std::vector<int> utf8::validate_batch(const std::vector<std::byte> &batch) {
 }
 
 inline bool utf8::is_valid_start(std::byte byte) {
-	auto byte_bin = to_bin(byte);
-	return is_valid_one_byte_unit_first(byte_bin) || is_valid_two_byte_unit_first(byte_bin)
-			|| is_valid_three_byte_unit_first(byte_bin) || is_valid_four_byte_unit_first(byte_bin);
+	return is_valid_one_byte_unit_first(byte) || is_valid_two_byte_unit_first(byte)
+			|| is_valid_three_byte_unit_first(byte) || is_valid_four_byte_unit_first(byte);
 }
 
 std::vector<std::pair<std::byte, size_t>> utf8::validate(const std::vector<std::byte> &bytes, int order) {
@@ -131,14 +163,13 @@ std::vector<std::pair<std::byte, size_t>> utf8::validate(const std::vector<std::
 
 	while (i < bytes.size()) {
 		int length = -1;
-		auto current_byte_bin = to_bin(bytes[i]);
-		if (is_valid_one_byte_unit_first(current_byte_bin)) {
+		if (is_valid_one_byte_unit_first(bytes[i])) {
 			length = 1;
-		} else if (is_valid_two_byte_unit_first(current_byte_bin)) {
+		} else if (is_valid_two_byte_unit_first(bytes[i])) {
 			length = 2;
-		} else if (is_valid_three_byte_unit_first(current_byte_bin)) {
+		} else if (is_valid_three_byte_unit_first(bytes[i])) {
 			length = 3;
-		} else if (is_valid_four_byte_unit_first(current_byte_bin)) {
+		} else if (is_valid_four_byte_unit_first(bytes[i])) {
 			length = 4;
 		}
 		if (length == -1) {
