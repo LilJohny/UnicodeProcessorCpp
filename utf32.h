@@ -6,7 +6,7 @@
 #define UNICODEPROCESSOR_UTF32_H
 
 #include <vector>
-
+#include <array>
 namespace utf32 {
 const std::byte BOM_BE_THIRD = std::byte('\xfe');
 const std::byte BOM_BE_FOURTH = std::byte('\xff');
@@ -16,10 +16,10 @@ const std::byte BOM_LE_SECOND = std::byte('\xfe');
 const int MAX_POINT = 1114111;
 const int MIN_POINT = 0;
 
-const std::vector<std::byte> WHITESPACES_S = {std::byte('\x09'), std::byte('\x0a'), std::byte('\x0b'),
+const std::array<std::byte,8> WHITESPACES_S = {std::byte('\x09'), std::byte('\x0a'), std::byte('\x0b'),
 																							std::byte('\x0c'), std::byte('\x0d'), std::byte('\x20'),
 																							std::byte('\x85'), std::byte('\xa0')};
-const std::vector<std::vector<std::byte>> WHITESPACES_D = {
+const std::vector<std::array<std::byte,2>> WHITESPACES_D = {
 		{std::byte('\x16'), std::byte('\x80')},
 		{std::byte('\x20'), std::byte('\x00')},
 		{std::byte('\x20'), std::byte('\x01')},

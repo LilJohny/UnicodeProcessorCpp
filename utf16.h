@@ -6,6 +6,7 @@
 #define UNICODEPROCESSOR_UTF16_H
 
 #include <vector>
+#include <array>
 
 namespace utf16 {
 const std::byte BOM_BE_FIRST = std::byte('\xfe');
@@ -25,11 +26,11 @@ const unsigned short HIGH_SURROGATE_MAX = 0xdbff;
 const unsigned short LOW_SURROGATE_MIN = 0xdc00;
 const unsigned short LOW_SURROGATE_MAX = 0xdfff;
 
-const std::vector<std::byte> WHITESPACES_S = {std::byte('\x09'), std::byte('\x0a'), std::byte('\x0b'),
+const std::array<std::byte,8> WHITESPACES_S = {std::byte('\x09'), std::byte('\x0a'), std::byte('\x0b'),
 																							std::byte('\x0c'), std::byte('\x0d'), std::byte('\x20'),
 																							std::byte('\x85'), std::byte('\xa0')};
 
-const std::vector<std::vector<std::byte>> WHITESPACES_D = {
+const std::vector<std::array<std::byte,2>> WHITESPACES_D = {
 		{std::byte('\x16'), std::byte('\x80')},
 		{std::byte('\x20'), std::byte('\x00')},
 		{std::byte('\x20'), std::byte('\x01')},

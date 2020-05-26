@@ -56,10 +56,13 @@ const std::vector<std::array<std::byte, 3>> WHITESPACES_T = {
 		{std::byte('\xe2'), std::byte('\x81'), std::byte('\xa0')},
 		{std::byte('\xef'), std::byte('\xbb'), std::byte('\xbf')}
 };
+
 const std::vector<std::vector<std::vector<std::byte>>>
 		boundaries_length_one = {{{std::byte('\x00'), std::byte('\x7f')}}};
+
 const std::vector<std::vector<std::vector<std::byte>>>
 		boundaries_length_two = {{{std::byte('\xc2'), std::byte('\xdf')}, {std::byte('\x80'), std::byte('\xbf')}}};
+
 const std::vector<std::vector<std::vector<std::byte>>> boundaries_length_three = {
 		{{std::byte('\xe0')}, {std::byte('\xa0'), std::byte('\xbf')}, {std::byte('\x80'), std::byte('\xbf')}},
 		{{std::byte('\xe1'), std::byte('\xec')}, {std::byte('\x80'), std::byte('\xbf')},
@@ -68,6 +71,7 @@ const std::vector<std::vector<std::vector<std::byte>>> boundaries_length_three =
 		{{std::byte('\xee'), std::byte('\xef')}, {std::byte('\x80'), std::byte('\xbf')},
 		 {std::byte('\x80'), std::byte('\xbf')}}
 };
+
 const std::vector<std::vector<std::vector<std::byte>>> boundaries_length_four = {
 		{{std::byte('\xf0')}, {std::byte('\x90'), std::byte('\xbf')}, {std::byte('\x80'), std::byte('\xbf')},
 		 {std::byte('\x80'), std::byte('\xbf')}},
@@ -76,6 +80,7 @@ const std::vector<std::vector<std::vector<std::byte>>> boundaries_length_four = 
 		{{std::byte('\xf4')}, {std::byte('\x80'), std::byte('\x8f')}, {std::byte('\x80'), std::byte('\xbf')},
 		 {std::byte('\x80'), std::byte('\xbf')}}
 };
+
 const std::map<int, const std::vector<std::vector<std::vector<std::byte>>>> boundaries = {
 		{1, boundaries_length_one},
 		{2, boundaries_length_two},
